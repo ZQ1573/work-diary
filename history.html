@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>往日打卡记录</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <section class="card">
+      <div class="row">
+        <a class="btn btn-ghost btn-block" href="index.html">返回首页</a>
+      </div>
+      <h2 style="margin-top:12px;">往日打卡记录</h2>
+      <div class="row">
+        <button id="clearAll" class="btn btn-danger btn-block">清空全部记录</button>
+      </div>
+      <div id="dayList" class="node-list"></div>
+      <div id="emptyHint" class="hint" style="display:none;">暂无历史打卡记录。</div>
+    </section>
+
+    <section class="card" id="detailCard" style="display:none;">
+      <h2 id="detailTitle">详情</h2>
+      <div id="detailBody"></div>
+    </section>
+  </div>
+
+  <script src="common.js"></script>
+  <script>
+    function renderDayList() {
+      const records = load(K_RECORDS, {});
+      const memoDaily = load(K_MEMO_DAILY, {});
+      const days = Object.keys(records).sort().reverse(); // 新到旧
+      const list = document.getElementById('dayList');
+      list.innerHTML = '';
+      if (days.length === 0) {
+        document.getElementById('emptyHint').style.display = 'block';
+        return;
+      }
+      days.forEach(function (day) {
+        const rec = records[day];
+        const memo = memoDaily[day];
+        const div = document.createElement('div');
+        div.className = 'node';
+        const info = document.createElement('div');
+        info.className = 'node-info';
+        const name = document.createElement('div');
+        name.className = 'node-name';
+        name.textContent = day;
+        const sub = document.createElement('div');
+        sub.className = 'node-time';
+        sub.textContent = '已打卡 ' + Object.keys(rec).length + ' 项' + (memo ? ' · 有备忘' : '');
+        info.appendChild(name);
+        info.appendChild(sub);
+
+        const btn = document.createElement('button');
+        btn.className = 'node-btn';
+        btn.textContent = '查看';
+        btn.onclick = function () { showDetail(day); };
+
+        div.appendChild(info);
+        div.appendChild(btn);
+        list.appendChild(div);
+      });
+    }
+
+    function showDetail(day) {
+      const records = load(K_RECORDS, {});
+      const nodes = load(K_NODES, []);
+      const memoDaily = load(K_MEMO_DAILY, {});
+      const rec = records[day] || {};
+      const card = document.getElementById('detailCard');
+      card.style.display = 'block';
+      document.getElementById('detailTitle').textContent = day + ' 打卡详情';
+
+      const body = document.getElementById('detailBody');
+      body.innerHTML = '';
+      const wrap = document.createElement('div');
+      wrap.className = 'node-list';
+      nodes.forEach(function (n) {
+        wrap.appendChild(buildNodeRow(n, rec[n.id], null));
+      });
+      body.appendChild(wrap);
+
+      const memoTitle = document.createElement('h2');
+      memoTitle.style.marginTop = '16px';
+      memoTitle.textContent = '当日备忘';
+      body.appendChild(memoTitle);
+      const memoBox = document.createElement('div');
+      memoBox.className = 'memo-readonly';
+      memoBox.textContent = memoDaily[day] ? memoDaily[day] : '（无）';
+      body.appendChild(memoBox);
+
+      card.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function clearAll() {
+      if (!confirm('确定清空全部打卡记录与全部备忘？此操作不可恢复，且不影响大小周状态。')) return;
+      localStorage.removeItem(K_RECORDS);
+      localStorage.removeItem(K_MEMO_DAILY);
+      document.getElementById('detailCard').style.display = 'none';
+      renderDayList();
+    }
+    document.getElementById('clearAll').onclick = clearAll;
+
+    renderDayList();
+  </script>
+</body>
+</html>

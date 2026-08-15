@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大小周 打卡 备忘</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <section class="card">
+      <div class="week-status">
+        <div class="week-label">本周是</div>
+        <div id="weekText" class="week-big">大周</div>
+        <div id="weekRange" class="week-range"></div>
+      </div>
+      <div class="row row-center">
+        <button id="toggleWeek" class="btn">切换大小周</button>
+      </div>
+      <div class="hint">切换可自定义本周大小周。</div>
+    </section>
+
+    <section class="card">
+      <h2>打卡</h2>
+      <div id="nodeList" class="node-list"></div>
+      <div class="row">
+        <input id="nodeName" class="input" type="text" placeholder="新节点名称，如 上班" maxlength="10">
+        <input id="nodeTime" class="input input-time" type="time" title="目标时间点（可选）">
+        <button id="addNode" class="btn btn-mini">添加节点</button>
+      </div>
+      <div class="hint">添加节点时可设置目标时间点（如 08:30）。点击节点名右侧的时间即可修改。</div>
+      <div class="row">
+        <button id="clearToday" class="btn btn-ghost">重置今日打卡</button>
+        <span id="todayLabel" class="today-label"></span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>备忘 / 待办</h2>
+      <textarea id="memo" class="memo" placeholder="记录待办、工作总结（自动保存）"></textarea>
+    </section>
+
+    <section class="card">
+      <h2>数据</h2>
+      <div class="row row-equal">
+        <button id="resetAll" class="btn btn-danger">重置今日状态</button>
+        <a id="viewHistory" class="btn btn-ghost" href="history.html">查看往日打卡记录</a>
+      </div>
+      <div class="hint">数据保存在本机浏览器 localStorage，不会上传。</div>
+    </section>
+  </div>
+
+  <script src="common.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
